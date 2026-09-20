@@ -6,7 +6,8 @@ import { PreviewStage } from '../stage/PreviewStage';
 import { Timeline } from './Timeline';
 import { TransportControls } from './TransportControls';
 import { ChapterOverlay } from './ChapterOverlay';
-import { Volume2, VolumeX } from 'lucide-react';
+import { WelcomeModal } from './WelcomeModal';
+import { Volume2, VolumeX, Sparkles, FileText } from 'lucide-react';
 import clsx from 'clsx';
 import { TOTAL_DURATION } from '../engine/script';
 import { soundEngine, AudioStatus } from '../audio/soundEngine';
@@ -20,6 +21,8 @@ export const ShowPlayer: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [mouseMovedRecently, setMouseMovedRecently] = useState<boolean>(false);
   const [mobileView, setMobileView] = useState<'split' | 'code' | 'stage'>('split');
+  const [showWelcomeModal, setShowWelcomeModal] = useState<boolean>(true);
+  const [isPortfolioMode, setIsPortfolioMode] = useState<boolean>(false);
   const mouseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -40,17 +43,30 @@ export const ShowPlayer: React.FC = () => {
     };
   }, []);
 
-  // Autoplay start after gentle stillness (1.5s)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      timelineEngine.play();
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  const handleSelectPortfolio = () => {
+    setShowWelcomeModal(false);
+    setIsPortfolioMode(true);
+    timelineEngine.seek(TOTAL_DURATION);
+    timelineEngine.pause();
+  };
+
+  const handleSelectStory = async () => {
+    setShowWelcomeModal(false);
+    setIsPortfolioMode(false);
+    try {
+      await soundEngine.ensureActive();
+      soundEngine.setMuted(false);
+    } catch {
+      // ignore
+    }
+    timelineEngine.seek(0);
+    timelineEngine.play();
+  };
 
   // Keyboard controls listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (showWelcomeModal) return;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
         return;
       }
@@ -331,6 +347,41 @@ export const ShowPlayer: React.FC = () => {
       onMouseMove={handleMouseMove}
       className="relative w-screen h-[100dvh] flex flex-col bg-[#faf9f6] text-[#141416] overflow-hidden select-none font-sans"
     >
+      {/* Welcome Choice Modal (Shown on first entry) */}
+      {showWelcomeModal && (
+        <WelcomeModal
+          onSelectPortfolio={handleSelectPortfolio}
+          onSelectStory={handleSelectStory}
+        />
+      )}
+
+      {/* Floating Mode Switcher */}
+      {!showWelcomeModal && (
+        <div className="fixed top-3.5 right-4 z-40 pointer-events-auto flex items-center space-x-2">
+          {isPortfolioMode || snapshot.chapterIndex === 12 ? (
+            <button
+              type="button"
+              onClick={handleSelectStory}
+              className="flex items-center space-x-2 text-xs font-sans bg-[#141416] hover:bg-[#252528] text-[#faf9f6] px-3.5 py-1.5 rounded-full shadow-2xl border border-white/20 transition-all hover:scale-105 cursor-pointer touch-manipulation font-medium"
+              title="Watch the real-time document creation from scratch"
+            >
+              <Sparkles size={13} className="text-[#e05638]" />
+              <span>Watch the Story ▶</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSelectPortfolio}
+              className="hidden sm:flex items-center space-x-1.5 text-xs font-sans bg-white/95 hover:bg-white text-[#141416] px-3.5 py-1.5 rounded-full shadow-lg border border-black/15 transition-all hover:scale-105 cursor-pointer touch-manipulation font-medium"
+              title="Jump directly to the completed portfolio"
+            >
+              <FileText size={13} className="text-[#c84b31]" />
+              <span>View Portfolio (Result) →</span>
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Chapter Title Badge Overlay (Centered cinematic pill on desktop) */}
       <ChapterOverlay snapshot={snapshot} />
 
@@ -420,7 +471,7 @@ export const ShowPlayer: React.FC = () => {
       )}
 
       {/* Floating Sound Activation Banner (Shown in Chapter 0 when waiting for first user click) */}
-      {snapshot.chapterIndex === 0 && !audioStatus.isReady && (
+      {snapshot.chapterIndex === 0 && !audioStatus.isReady && !showWelcomeModal && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
           <button
             type="button"
