@@ -92,7 +92,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
         {/* Subtle Footer Note */}
         <p className="text-center text-[11px] font-sans text-[#57606a]/80">
-          💡 You can freely switch between both modes at any time.
+          You can freely switch between both modes at any time.
         </p>
       </div>
     </div>
