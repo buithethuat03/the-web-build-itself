@@ -68,19 +68,6 @@ export const PreviewStage: React.FC<PreviewStageProps> = ({ snapshot }) => {
         </div>
       )}
 
-      {/* Chapter 12 Finale Bottom Statement */}
-      {snapshot.chapterIndex === 12 && (
-        <div
-          style={{ backgroundColor: '#141416', color: '#faf9f6' }}
-          className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 pointer-events-none z-30 max-w-[94vw] bg-[#141416] border border-white/20 text-[#faf9f6] px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-2xl flex items-center space-x-2 animate-reveal"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#c84b31] animate-pulse flex-shrink-0" />
-          <span className="text-[11px] sm:text-xs font-serif italic text-white/95 whitespace-nowrap">Bui The Thuat · Backend &amp; DevOps Engineer</span>
-          <span className="text-white/30 text-xs">·</span>
-          <span className="text-[9.5px] sm:text-[10px] font-mono text-white/70 whitespace-nowrap">UET-VNU (GPA 3.72/4.0)</span>
-        </div>
-      )}
-
       {/* Clean stage frame */}
       <div
         className="w-full h-full flex-1 overflow-hidden transition-transform duration-500 ease-out"
