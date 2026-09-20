@@ -197,7 +197,9 @@ class SoundEngine {
     try {
       const loadSound = async (filename: string): Promise<AudioBuffer | null> => {
         try {
-          const res = await fetch(`/sounds/keyboard/${filename}`);
+          const baseUrl = import.meta.env.BASE_URL || './';
+          const cleanBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+          const res = await fetch(`${cleanBase}sounds/keyboard/${filename}`);
           if (!res.ok) return null;
           const arrayBuf = await res.arrayBuffer();
           if (!this.ctx) return null;
