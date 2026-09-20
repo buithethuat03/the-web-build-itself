@@ -64,11 +64,6 @@ export const ChapterOverlay: React.FC<ChapterOverlayProps> = ({ snapshot }) => {
             }}
             className="relative overflow-hidden bg-[#141416] border border-white/25 text-[#faf9f6] px-6 py-5 md:px-10 md:py-8 rounded-2xl shadow-2xl max-w-lg w-full text-center transform animate-in fade-in zoom-in-95 duration-300"
           >
-            {/* Giant Roman numeral watermark background */}
-            <div className="absolute -right-4 -bottom-6 text-white/[0.08] text-8xl md:text-9xl font-serif font-black select-none pointer-events-none">
-              {snapshot.eraYear}
-            </div>
-
             {/* Glowing Accent Bar */}
             <div className="mx-auto w-12 h-1 bg-[#c84b31] rounded-full mb-3 shadow-[0_0_10px_#c84b31]" />
 

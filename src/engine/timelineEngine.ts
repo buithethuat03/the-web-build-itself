@@ -7,7 +7,7 @@ type Listener = (snapshot: ShowSnapshot) => void;
 export class TimelineEngine {
   private currentTime: number = 0;
   private isPlaying: boolean = false;
-  private playbackSpeed: number = 1.0;
+  private playbackSpeed: number = 2.0;
   private lastRafTimestamp: number | null = null;
   private rafId: number | null = null;
   private listeners: Set<Listener> = new Set();

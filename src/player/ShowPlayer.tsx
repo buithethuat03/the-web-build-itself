@@ -425,9 +425,9 @@ export const ShowPlayer: React.FC = () => {
           <button
             type="button"
             onClick={handleToggleMute}
-            className="flex items-center space-x-2 text-xs font-sans bg-[#141416]/92 hover:bg-[#141416] text-[#faf9f6] px-4 py-2 rounded-full shadow-2xl border border-white/20 transition-all backdrop-blur-md animate-bounce"
+            className="flex items-center space-x-2 text-xs font-sans bg-white/95 hover:bg-white text-[#141416] px-4 py-2.5 rounded-full shadow-2xl border border-black/15 transition-all backdrop-blur-md animate-bounce font-medium"
           >
-            <Volume2 size={14} className="text-[#e05638]" />
+            <Volume2 size={14} className="text-[#c84b31]" />
             <span>Tap anywhere to enable audio (Music & Typing)</span>
           </button>
         </div>
