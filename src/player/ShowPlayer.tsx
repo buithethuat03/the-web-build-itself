@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { timelineEngine } from '../engine/timelineEngine';
 import { ShowSnapshot } from '../engine/types';
 import { CodePanel } from '../code/CodePanel';
@@ -117,44 +117,208 @@ export const ShowPlayer: React.FC = () => {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== 'undefined' ? window.innerWidth < 768 : false));
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const chapters = timelineEngine.getChapters();
   const totalDuration = TOTAL_DURATION;
 
   // Layout mode proportions
   const { layoutMode } = snapshot;
 
-  let desktopCodeClass = 'md:w-[42%] md:h-full';
-  let desktopStageClass = 'md:w-[58%] md:h-full';
-
-  if (layoutMode === 'blank') {
-    desktopCodeClass = 'w-full h-full';
-    desktopStageClass = 'hidden';
-  } else if (layoutMode === 'code-focus') {
-    desktopCodeClass = 'md:w-[58%] md:h-full';
-    desktopStageClass = 'md:w-[42%] md:h-full';
-  } else if (layoutMode === 'stage-dominant') {
-    desktopCodeClass = 'md:w-[28%] md:h-full';
-    desktopStageClass = 'md:w-[72%] md:h-full';
-  } else if (layoutMode === 'full-stage') {
-    desktopCodeClass = 'hidden';
-    desktopStageClass = 'w-full h-full';
-  }
-
-  // Mobile layout classes
-  let mobileCodeClass = 'w-full h-1/2';
-  let mobileStageClass = 'w-full h-1/2';
-
-  if (mobileView === 'code') {
-    mobileCodeClass = 'w-full h-full';
-    mobileStageClass = 'hidden';
-  } else if (mobileView === 'stage') {
-    mobileCodeClass = 'hidden';
-    mobileStageClass = 'w-full h-full';
-  } else {
-    // split
-    mobileCodeClass = 'w-full h-[45%]';
-    mobileStageClass = 'w-full h-[55%]';
-  }
+  // Dynamic smooth style computation for continuous fluid layout transitions
+  const { codePanelStyle, stagePanelStyle } = useMemo(() => {
+    if (!isMobile) {
+      // DESKTOP LAYOUT (Horizontal Split with continuous width & opacity transitions)
+      switch (layoutMode) {
+        case 'blank':
+          return {
+            codePanelStyle: {
+              width: '100%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+            stagePanelStyle: {
+              width: '0%',
+              height: '100%',
+              opacity: 0,
+              pointerEvents: 'none' as const,
+              transform: 'translateX(24px)',
+            },
+          };
+        case 'code-focus':
+          return {
+            codePanelStyle: {
+              width: '58%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+            stagePanelStyle: {
+              width: '42%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+          };
+        case 'stage-dominant':
+          return {
+            codePanelStyle: {
+              width: '28%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+            stagePanelStyle: {
+              width: '72%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+          };
+        case 'full-stage':
+          return {
+            codePanelStyle: {
+              width: '0%',
+              height: '100%',
+              opacity: 0,
+              pointerEvents: 'none' as const,
+              transform: 'translateX(-24px)',
+            },
+            stagePanelStyle: {
+              width: '100%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+          };
+        case 'split':
+        default:
+          return {
+            codePanelStyle: {
+              width: '42%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+            stagePanelStyle: {
+              width: '58%',
+              height: '100%',
+              opacity: 1,
+              pointerEvents: 'auto' as const,
+              transform: 'none',
+            },
+          };
+      }
+    } else {
+      // MOBILE LAYOUT (Vertical Stack with continuous height & opacity transitions)
+      if (layoutMode === 'blank') {
+        return {
+          codePanelStyle: {
+            width: '100%',
+            height: '100%',
+            opacity: 1,
+            pointerEvents: 'auto' as const,
+            transform: 'none',
+          },
+          stagePanelStyle: {
+            width: '100%',
+            height: '0%',
+            opacity: 0,
+            pointerEvents: 'none' as const,
+            transform: 'translateY(24px)',
+          },
+        };
+      }
+      if (layoutMode === 'full-stage') {
+        return {
+          codePanelStyle: {
+            width: '100%',
+            height: '0%',
+            opacity: 0,
+            pointerEvents: 'none' as const,
+            transform: 'translateY(-24px)',
+          },
+          stagePanelStyle: {
+            width: '100%',
+            height: '100%',
+            opacity: 1,
+            pointerEvents: 'auto' as const,
+            transform: 'none',
+          },
+        };
+      }
+      // Standard mobile view choices:
+      if (mobileView === 'code') {
+        return {
+          codePanelStyle: {
+            width: '100%',
+            height: '100%',
+            opacity: 1,
+            pointerEvents: 'auto' as const,
+            transform: 'none',
+          },
+          stagePanelStyle: {
+            width: '100%',
+            height: '0%',
+            opacity: 0,
+            pointerEvents: 'none' as const,
+            transform: 'translateY(24px)',
+          },
+        };
+      }
+      if (mobileView === 'stage') {
+        return {
+          codePanelStyle: {
+            width: '100%',
+            height: '0%',
+            opacity: 0,
+            pointerEvents: 'none' as const,
+            transform: 'translateY(-24px)',
+          },
+          stagePanelStyle: {
+            width: '100%',
+            height: '100%',
+            opacity: 1,
+            pointerEvents: 'auto' as const,
+            transform: 'none',
+          },
+        };
+      }
+      // Default mobile split:
+      return {
+        codePanelStyle: {
+          width: '100%',
+          height: '45%',
+          opacity: 1,
+          pointerEvents: 'auto' as const,
+          transform: 'none',
+        },
+        stagePanelStyle: {
+          width: '100%',
+          height: '55%',
+          opacity: 1,
+          pointerEvents: 'auto' as const,
+          transform: 'none',
+        },
+      };
+    }
+  }, [isMobile, layoutMode, mobileView]);
 
   // Bottom chrome visibility:
   // Hidden during Chapter 0 unless user explicitly moves mouse
@@ -303,42 +467,26 @@ export const ShowPlayer: React.FC = () => {
 
       {/* Main Viewport Stage Area */}
       <div className={clsx(
-        "relative flex-1 min-h-0 w-full flex overflow-hidden transition-[padding] duration-300",
+        "relative flex-1 min-h-0 w-full flex overflow-hidden transition-[padding] duration-500",
         snapshot.chapterIndex === 0 && !mouseMovedRecently ? 'pb-0' : 'pb-24 sm:pb-16'
       )}>
-        {/* Mode A (Blank Opening) Pure White Canvas */}
-        {layoutMode === 'blank' ? (
-          <div className="w-full h-full bg-white transition-opacity duration-700">
-            <CodePanel snapshot={snapshot} isOpeningMode={true} />
+        <div className="w-full h-full flex flex-col md:flex-row overflow-hidden relative">
+          {/* Code Panel Container */}
+          <div
+            style={codePanelStyle}
+            className="flex-shrink-0 flex flex-col min-h-0 min-w-0 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden relative z-10"
+          >
+            <CodePanel snapshot={snapshot} />
           </div>
-        ) : (
-          /* Split / Proportional Stage Layout */
-          <div className="w-full h-full flex flex-col md:flex-row overflow-hidden transition-all duration-500 ease-out">
-            {/* Code Panel */}
-            {layoutMode !== 'full-stage' && (
-              <div
-                className={clsx(
-                  desktopCodeClass,
-                  mobileCodeClass,
-                  'min-h-0 transition-all duration-500 ease-out flex-shrink-0 overflow-hidden'
-                )}
-              >
-                <CodePanel snapshot={snapshot} />
-              </div>
-            )}
 
-            {/* Stage Preview */}
-            <div
-              className={clsx(
-                desktopStageClass,
-                mobileStageClass,
-                'min-h-0 transition-all duration-500 ease-out flex-grow overflow-hidden'
-              )}
-            >
-              <PreviewStage snapshot={snapshot} />
-            </div>
+          {/* Live Stage Viewport Container */}
+          <div
+            style={stagePanelStyle}
+            className="flex-1 min-h-0 min-w-0 flex flex-col transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden relative z-0"
+          >
+            <PreviewStage snapshot={snapshot} />
           </div>
-        )}
+        </div>
       </div>
 
       {/* Bottom Player Chrome (Hidden in Chapter 0, Slides up on interaction) */}

@@ -36,7 +36,7 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
 
   // Extract title if present in htmlBuffer
   const titleMatch = htmlBuffer.match(/<title[^>]*>([^<]*)<\/title>/i);
-  const docTitle = titleMatch ? titleMatch[1] : 'The History of the World Wide Web';
+  const docTitle = titleMatch ? titleMatch[1] : 'The Web Builds Itself';
 
   // Extract inner body content if htmlBuffer has reached <body>
   let bodyContent = '';
@@ -53,7 +53,7 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   `;
 
-  // Base raw styling before CSS arrives + responsive adaptations + 90s retro support
+  // Authentic browser-default styles before CSS arrives in Chapter 9
   const basePreCssStyle = `
     <style id="stage-pristine-base">
       html {
@@ -63,19 +63,19 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
       }
       body {
         margin: 0;
-        padding: 2rem 1.5rem;
+        padding: 2.5rem 1.75rem;
         min-height: 100%;
         box-sizing: border-box;
         font-family: 'Times New Roman', Times, serif;
-        background-color: #fcfbf9;
-        color: #111111;
+        background-color: #faf9f6;
+        color: #141416;
         transition: background-color 0.5s ease, color 0.5s ease;
       }
       *, *:before, *:after {
         box-sizing: inherit;
       }
       
-      /* Classic 1991 CERN Hyperlink styles */
+      /* Classic Unstyled Hyperlink styles */
       a {
         color: #0000ee;
         text-decoration: underline;
@@ -87,291 +87,90 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
         color: #c84b31;
       }
 
-      /* 1996 The Wild 90s Web Styles */
-      .retro-marquee {
-        background: #111827;
-        color: #fbbf24;
-        font-family: 'Courier New', monospace;
-        font-size: 0.85rem;
-        font-weight: bold;
-        padding: 6px 12px;
-        border: 2px ridge #f59e0b;
-        margin-bottom: 12px;
-      }
-      .visitor-counter {
-        display: inline-block;
-        background: #000000;
-        color: #22c55e;
-        font-family: 'JetBrains Mono', 'Courier New', monospace;
-        font-size: 0.8rem;
-        font-weight: bold;
-        letter-spacing: 0.15em;
-        padding: 4px 10px;
-        border: 2px inset #9ca3af;
-        margin-top: 10px;
-        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
-      }
-      .retro-table {
-        margin: 1rem 0;
-        box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
-      }
-
-      /* 2024 Living Canvas & Interactive Controls */
-      #ambient-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
+      /* Clean Default Table Appearance before CSS */
+      table {
+        border-collapse: collapse;
+        margin: 1.5rem 0;
         width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 0;
-        opacity: 0.45;
+      }
+      th, td {
+        border: 1px solid #d5d0c7;
+        padding: 8px 12px;
+      }
+      th {
+        background: #f4f1ea;
       }
 
-      .interactive-stage-card {
-        position: relative;
-        z-index: 10;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(20, 20, 22, 0.1);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin: 2rem 0;
-        box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.08);
-      }
-
-      .interactive-controls-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-      }
-
-      .era-btn {
-        background: #f4f3ef;
+      /* Default Native Dialog Styling */
+      dialog {
+        border: 1px solid rgba(20, 20, 22, 0.2);
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 480px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        background: #ffffff;
         color: #141416;
-        border: 1px solid rgba(20, 20, 22, 0.15);
-        padding: 0.5rem 1.1rem;
-        border-radius: 9999px;
-        font-family: 'Instrument Sans', sans-serif;
-        font-size: 0.82rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       }
-      .era-btn:hover, .era-btn.active {
-        background: #c84b31;
-        color: #ffffff;
-        border-color: #c84b31;
-        box-shadow: 0 4px 12px rgba(200, 75, 49, 0.3);
-      }
-
-      .dispatch-counter-wrap {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.85rem;
-        color: #4b5563;
-      }
-
-      .live-dot {
-        width: 8px;
-        height: 8px;
-        background: #10b981;
-        border-radius: 50%;
-        box-shadow: 0 0 8px #10b981;
-        animation: pulse-dot 1.5s infinite;
-      }
-      @keyframes pulse-dot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.4; transform: scale(0.85); }
-      }
-
-      .final-colophon {
-        margin-top: 3rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(20, 20, 22, 0.1);
-        text-align: center;
-        font-family: 'Newsreader', serif;
-        font-style: italic;
-        color: #6b7280;
-        font-size: 0.95rem;
-      }
-
-      /* Era Themes (Living Runtime Switcher) */
-      body.theme-cern {
-        background: #18191c !important;
-        color: #38bdf8 !important;
-        font-family: 'Courier New', monospace !important;
-      }
-      body.theme-cern a { color: #34d399 !important; }
-      body.theme-cern .stat-card, body.theme-cern .interactive-stage-card {
-        background: #22242a !important;
-        border-color: #38bdf8 !important;
-        color: #f1f5f9 !important;
-      }
-
-      body.theme-zen {
-        background: #faf8f5 !important;
-        color: #292524 !important;
-        font-family: 'Newsreader', serif !important;
-      }
-
-      body.theme-modern {
-        background: #0f172a !important;
-        color: #f8fafc !important;
-      }
-      body.theme-modern .stat-card, body.theme-modern .interactive-stage-card {
-        background: rgba(30, 41, 59, 0.85) !important;
-        border-color: rgba(255, 255, 255, 0.15) !important;
-        color: #f8fafc !important;
-      }
-      body.theme-modern h1, body.theme-modern h2, body.theme-modern h3, body.theme-modern h4 {
-        color: #ffffff !important;
-      }
-      body.theme-modern .dispatch-counter-wrap {
-        color: #94a3b8 !important;
-      }
-      body.theme-modern .final-colophon {
-        border-top-color: rgba(255, 255, 255, 0.15) !important;
-        color: #94a3b8 !important;
+      dialog::backdrop {
+        background: rgba(20, 20, 22, 0.4);
+        backdrop-filter: blur(4px);
       }
 
       /* Responsive Adaptations for Mobile Screens */
       @media (max-width: 768px) {
-        html, body {
-          padding: 1.25rem 0.85rem !important;
+        body {
+          padding: 1.5rem 1rem !important;
         }
         h1 {
-          font-size: 1.9rem !important;
+          font-size: 2rem !important;
           line-height: 1.2 !important;
-        }
-        .metrics-deck {
-          grid-template-columns: 1fr !important;
-          gap: 1rem !important;
-        }
-        .interactive-controls-row {
-          gap: 0.5rem !important;
-        }
-        .era-btn {
-          font-size: 0.75rem !important;
-          padding: 0.4rem 0.8rem !important;
         }
       }
     </style>
   `;
 
-  // Injected CSS buffer from Chapter 3+
+  // Injected CSS buffer from Chapter 9+
   const injectedStyle = cssBuffer.trim().length > 0 ? `
     <style id="showcase-injected-style">
       ${cssBuffer}
     </style>
   ` : '';
 
-  // Synchronizer script for live interactive inputs, details, dialog states, and canvas particles
+  // Synchronizer script for live interactive dialog states and navigation
   const stateSyncScript = `
     <script>
       (function() {
         const state = ${JSON.stringify(interactiveState)};
         
-        // Sync era theme
-        if (state.theme) {
-          document.body.className = 'theme-' + state.theme;
-        }
+        // Native Dialog Interactivity
+        const dialog = document.getElementById('manifest-dialog');
+        const openBtn = document.getElementById('btn-open-manifest');
+        const closeBtn = document.getElementById('btn-close-manifest');
 
-        // Sync dispatch counter
-        const dispatchEl = document.getElementById('stat-dispatch');
-        if (dispatchEl && state.dispatches) {
-          dispatchEl.innerText = Number(state.dispatches).toLocaleString();
-        }
-
-        // Highlight active era button
-        const activeBtnId = 'btn-era-' + (state.theme || 'modern');
-        document.querySelectorAll('.era-btn').forEach(btn => {
-          if (btn.id === activeBtnId) btn.classList.add('active');
-          else btn.classList.remove('active');
-        });
-
-        // Wire interactive era buttons for direct user clicking
-        document.querySelectorAll('.era-btn').forEach(btn => {
-          btn.onclick = function() {
-            const era = this.id.replace('btn-era-', '');
-            document.body.className = 'theme-' + era;
-            document.querySelectorAll('.era-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-          };
-        });
-
-        // Canvas Generative Particles Background (Chapter 7+)
-        let canvas = document.getElementById('ambient-canvas');
-        if (!canvas && ${snapshot.chapterIndex} >= 6) {
-          canvas = document.createElement('canvas');
-          canvas.id = 'ambient-canvas';
-          document.body.appendChild(canvas);
-        }
-
-        if (canvas) {
-          const ctx = canvas.getContext('2d');
-          let width = canvas.width = window.innerWidth;
-          let height = canvas.height = window.innerHeight;
-          window.onresize = () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-          };
-
-          const particles = [];
-          const numParticles = 35;
-          for (let i = 0; i < numParticles; i++) {
-            particles.push({
-              x: Math.random() * width,
-              y: Math.random() * height,
-              vx: (Math.random() - 0.5) * 0.8,
-              vy: (Math.random() - 0.5) * 0.8,
-              radius: Math.random() * 2.5 + 1
-            });
+        if (dialog) {
+          if (state.dialogOpen && !dialog.open) {
+            try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
+          } else if (!state.dialogOpen && dialog.open) {
+            try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
           }
-
-          let animId;
-          function render() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = document.body.classList.contains('theme-modern') ? 'rgba(56, 189, 248, 0.7)' : 'rgba(200, 75, 49, 0.6)';
-            ctx.strokeStyle = document.body.classList.contains('theme-modern') ? 'rgba(56, 189, 248, 0.15)' : 'rgba(200, 75, 49, 0.15)';
-
-            for (let i = 0; i < numParticles; i++) {
-              const p = particles[i];
-              p.x += p.vx;
-              p.y += p.vy;
-              if (p.x < 0 || p.x > width) p.vx *= -1;
-              if (p.y < 0 || p.y > height) p.vy *= -1;
-
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-              ctx.fill();
-
-              for (let j = i + 1; j < numParticles; j++) {
-                const p2 = particles[j];
-                const dx = p.x - p2.x;
-                const dy = p.y - p2.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 100) {
-                  ctx.beginPath();
-                  ctx.moveTo(p.x, p.y);
-                  ctx.lineTo(p2.x, p2.y);
-                  ctx.stroke();
-                }
-              }
-            }
-            animId = requestAnimationFrame(render);
-          }
-          render();
         }
 
-        // Chapter 8 Finale Majestic Vertical Glide
+        if (openBtn && dialog) {
+          openBtn.onclick = function() {
+            try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
+          };
+        }
+        if (closeBtn && dialog) {
+          closeBtn.onclick = function() {
+            try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
+          };
+        }
+
+        // Chapter 12 Finale Majestic Vertical Glide
         const chIdx = ${snapshot.chapterIndex};
         const currentTime = ${snapshot.time};
-        if (chIdx === 8 && currentTime >= 290) {
-          const glideProgress = Math.min(1, Math.max(0, (currentTime - 290) / 10));
+        if (chIdx === 12 && currentTime >= 615) {
+          const glideProgress = Math.min(1, Math.max(0, (currentTime - 615) / 5));
           const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
           window.scrollTo({ top: glideProgress * maxScroll, behavior: 'auto' });
         } else {
@@ -390,7 +189,7 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
     </script>
   `;
 
-  // Injected JS buffer from Chapter 6+
+  // Injected JS buffer from Chapter 11+
   const injectedJs = jsBuffer.trim().length > 0 ? `
     <script>
       try {
@@ -455,31 +254,28 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
       styleEl.textContent = cssBuffer;
     }
 
-    // 3. Sync Interactive State & Era Theme
-    if (interactiveState.theme) {
-      doc.body.className = 'theme-' + interactiveState.theme;
-      const activeBtnId = 'btn-era-' + interactiveState.theme;
-      doc.querySelectorAll('.era-btn').forEach(btn => {
-        if (btn.id === activeBtnId) btn.classList.add('active');
-        else btn.classList.remove('active');
-      });
+    // 3. Sync Interactive Dialog State
+    const dialog = doc.getElementById('manifest-dialog') as HTMLDialogElement | null;
+    if (dialog) {
+      if (interactiveState.dialogOpen && !dialog.open) {
+        try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
+      } else if (!interactiveState.dialogOpen && dialog.open) {
+        try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
+      }
     }
 
-    const dispatchEl = doc.getElementById('stat-dispatch');
-    if (dispatchEl && interactiveState.dispatches) {
-      dispatchEl.innerText = Number(interactiveState.dispatches).toLocaleString();
-    }
-
-    // Ensure interactive click handlers stay active on DOM updates
-    doc.querySelectorAll('.era-btn').forEach(btn => {
-      const buttonEl = btn as HTMLButtonElement;
-      buttonEl.onclick = function() {
-        const era = buttonEl.id.replace('btn-era-', '');
-        doc.body.className = 'theme-' + era;
-        doc.querySelectorAll('.era-btn').forEach(b => b.classList.remove('active'));
-        buttonEl.classList.add('active');
+    const openBtn = doc.getElementById('btn-open-manifest');
+    const closeBtn = doc.getElementById('btn-close-manifest');
+    if (openBtn && dialog) {
+      openBtn.onclick = () => {
+        try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
       };
-    });
+    }
+    if (closeBtn && dialog) {
+      closeBtn.onclick = () => {
+        try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
+      };
+    }
 
     // 4. Smart Auto-scroll & Camera Positioning
     const win = iframe.contentWindow;
@@ -519,8 +315,8 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
         (win as any).__userScrolledUp = false;
       }
 
-      if (chapterIndex === 8 && time >= 290) {
-        const glideProgress = Math.min(1, Math.max(0, (time - 290) / 10));
+      if (chapterIndex === 12 && time >= 615) {
+        const glideProgress = Math.min(1, Math.max(0, (time - 615) / 5));
         const maxScroll = Math.max(0, doc.documentElement.scrollHeight - win.innerHeight);
         (win as any).__isAutoScrolling = true;
         win.scrollTo({ top: glideProgress * maxScroll, behavior: 'auto' });

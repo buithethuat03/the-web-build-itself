@@ -1,4 +1,5 @@
 import React from 'react';
+import { TOTAL_DURATION } from '../engine/script';
 import { ShowSnapshot, ChapterInfo } from '../engine/types';
 import { timelineEngine } from '../engine/timelineEngine';
 import {
@@ -100,7 +101,7 @@ export const TransportControls: React.FC<TransportControlsProps> = ({
         <div className="text-[11px] font-mono text-[#141416]/70 tracking-tight tabular-nums pl-1.5 whitespace-nowrap">
           <span>{formatTime(snapshot.time)}</span>
           <span className="text-[#141416]/30 mx-1">/</span>
-          <span>{formatTime(335)}</span>
+          <span>{formatTime(TOTAL_DURATION)}</span>
         </div>
 
         {/* Chapter Title Badge (hidden on narrow screens) */}

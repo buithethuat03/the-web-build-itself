@@ -8,25 +8,34 @@
  */
 
 // Musical Chords for Chapters (Root frequencies in Hz)
+// Musical Chords for Chapters (Root frequencies in Hz)
 const CHORD_PROGRESSIONS: Record<number, number[][]> = {
-  // Ch 0 - 1991 The Spark: Deep primordial drone (C)
-  0: [[65.41, 130.81, 196.00, 293.66]], // C2, C3, G3, D4
-  // Ch 1 - 1993 Hypertext: Gentle suspended clarity
-  1: [[65.41, 130.81, 196.00, 329.63], [110.00, 164.81, 220.00, 329.63]], // Cmaj9 / Am7
-  // Ch 2 - 1996 Wild 90s: Playful retro bright cadence
-  2: [[87.31, 130.81, 174.61, 261.63], [98.00, 146.83, 196.00, 293.66]], // Fmaj7 / G
-  // Ch 3 - 2001 CSS Revolution: BRILLIANT HARMONIC SWELL (Zen Garden transformation)
-  3: [[65.41, 130.81, 196.00, 329.63, 493.88], [87.31, 174.61, 261.63, 392.00, 523.25]],
-  // Ch 4 - 2008 HTML5: Structured expansive cadence
-  4: [[87.31, 174.61, 220.00, 349.23], [98.00, 196.00, 246.94, 392.00]],
-  // Ch 5 - 2015 Flexbox & Grid: Rhythmic modern fluid chords
-  5: [[110.00, 164.81, 261.63, 329.63], [73.42, 146.83, 220.00, 293.66]], // Am / Dm
-  // Ch 6 - 1995-2015 JavaScript: Kinetic dynamic pulse
-  6: [[110.00, 220.00, 329.63, 440.00], [73.42, 146.83, 220.00, 349.23]],
-  // Ch 7 - 2024 Reactive Canvas: Cosmic celestial synthwave
-  7: [[73.42, 146.83, 220.00, 349.23], [58.27, 116.54, 174.61, 293.66]], // Dm / Bb
-  // Ch 8 - 2026 Finale: Grand celestial resolution (Full Spectrum)
-  8: [[65.41, 130.81, 196.00, 261.63, 329.63, 392.00, 493.88]], // Pure Cmaj9 full spectrum
+  // Ch 0 - 1991 Empty Document: Deep contemplative drone (C2, C3, G3, D4)
+  0: [[65.41, 130.81, 196.00, 293.66]],
+  // Ch 1 - 1991 The First Idea: Gentle suspended awakening (Cmaj9)
+  1: [[65.41, 130.81, 196.00, 329.63], [110.00, 164.81, 220.00, 329.63]],
+  // Ch 2 - 1993 Connections: Open interconnected fourths & fifths
+  2: [[87.31, 130.81, 174.61, 261.63], [98.00, 146.83, 196.00, 293.66]],
+  // Ch 3 - 1993-1995 The Article: Rich narrative editorial depth (Fmaj7 / G)
+  3: [[87.31, 130.81, 174.61, 261.63, 349.23], [98.00, 146.83, 196.00, 293.66, 392.00]],
+  // Ch 4 - 1993 Image / Figure: Geometric golden ratio clarity
+  4: [[110.00, 164.81, 220.00, 329.63], [73.42, 146.83, 220.00, 293.66]],
+  // Ch 5 - 1996 Structured Information: Steady cadence of accumulated knowledge
+  5: [[87.31, 174.61, 220.00, 349.23], [98.00, 196.00, 246.94, 392.00]],
+  // Ch 6 - 1995 The Page Listens: Curious expectant cadence
+  6: [[110.00, 164.81, 261.63, 329.63], [73.42, 146.83, 220.00, 293.66]],
+  // Ch 7 - 2014 Native Interaction: Playful suspended discovery
+  7: [[73.42, 146.83, 220.00, 349.23], [98.00, 146.83, 196.00, 293.66]],
+  // Ch 8 - 2001 Vector Graphics: Precise crystal architecture
+  8: [[87.31, 130.81, 174.61, 261.63], [110.00, 164.81, 220.00, 329.63]],
+  // Ch 9 - CSS Arrives: BRILLIANT HARMONIC SWELL (The transformation payoff)
+  9: [[65.41, 130.81, 196.00, 329.63, 493.88], [87.31, 174.61, 261.63, 392.00, 523.25]],
+  // Ch 10 - Motion & Micro-Interactions: Fluid shimmer
+  10: [[110.00, 220.00, 329.63, 440.00], [73.42, 146.83, 220.00, 349.23]],
+  // Ch 11 - JavaScript: Kinetic living DOM dynamic pulse
+  11: [[73.42, 146.83, 220.00, 349.23], [58.27, 116.54, 174.61, 293.66]],
+  // Ch 12 - The Web Builds Itself: Grand celestial resolution (Full Spectrum Cmaj9)
+  12: [[65.41, 130.81, 196.00, 261.63, 329.63, 392.00, 493.88]],
 };
 
 export interface AudioStatus {

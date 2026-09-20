@@ -51,51 +51,16 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
     }
   }, [activeLineIndex, activeCode]);
 
-  // If in opening mode (Mode A / Chapter 0), render as an ethereal pure white typewriter canvas
-  if (isOpeningMode) {
-    return (
-      <div className="w-full h-full flex flex-col justify-center items-center md:items-start px-6 md:px-16 font-code text-sm md:text-base leading-[1.9] text-[#141416] select-none bg-white">
-        <div className="max-w-xl w-full space-y-1">
-          {tokenizedLines.map((line, idx) => {
-            const isCurrentActiveLine = idx === tokenizedLines.length - 1;
-            return (
-              <div key={idx} className="flex items-center w-full min-w-0">
-                <span className="whitespace-pre-wrap break-words [word-break:break-word] min-w-0">
-                  {line.tokens.map((token, tIdx) => (
-                    <span
-                      key={tIdx}
-                      className={clsx(
-                        token.type === 'tag' && 'font-medium text-[#141416]',
-                        token.type === 'attr' && 'text-[#6e7781]',
-                        token.type === 'val' && 'text-[#0550ae]',
-                        token.type === 'punct' && 'text-[#57606a]',
-                        token.type === 'text' && 'text-[#141416]'
-                      )}
-                    >
-                      {token.content}
-                    </span>
-                  ))}
-                  {isCurrentActiveLine && (
-                    <span
-                      className={clsx(
-                        'inline-block w-[2px] h-[16px] ml-[2px] bg-[#c84b31] align-middle',
-                        isTyping ? 'opacity-100' : 'animate-caret'
-                      )}
-                    />
-                  )}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col h-full bg-[#fdfcfb] border-r border-[#141416]/8 select-text overflow-hidden font-code text-[11.5px] sm:text-[12px] md:text-[13px] leading-[1.65] md:leading-[1.7]">
-      {/* Code Editor Header */}
-      <div className="sticky top-0 z-10 flex-shrink-0 flex items-center justify-between px-3 md:px-4 py-1.5 md:py-2 border-b border-[#141416]/6 bg-[#faf8f5]/90 backdrop-blur-xs select-none">
+    <div className={clsx(
+      "flex flex-col h-full border-r border-[#141416]/8 select-text overflow-hidden font-code text-[11.5px] sm:text-[12px] md:text-[13px] leading-[1.65] md:leading-[1.7] transition-colors duration-700",
+      snapshot.chapterIndex === 0 ? "bg-white" : "bg-[#fdfcfb]"
+    )}>
+      {/* Code Editor Header (Smoothly collapsed and transparent in Chapter 0, slides open in Chapter 1) */}
+      <div className={clsx(
+        "sticky top-0 z-10 flex-shrink-0 flex items-center justify-between px-3 md:px-4 border-b border-[#141416]/6 bg-[#faf8f5]/90 backdrop-blur-xs select-none transition-all duration-700 overflow-hidden",
+        snapshot.chapterIndex === 0 ? "h-0 py-0 opacity-0 pointer-events-none" : "h-9 py-1.5 md:py-2 opacity-100"
+      )}>
         <div className="flex items-center space-x-2">
           <span className={clsx(
             "w-2 h-2 rounded-full transition-colors duration-300",
@@ -123,7 +88,10 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
       {/* Code Lines Container */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden p-2 md:p-4 custom-scrollbar space-y-[1px]"
+        className={clsx(
+          "flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar space-y-[1px] transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          snapshot.chapterIndex === 0 ? "p-6 md:p-10 max-w-3xl" : "p-2 md:p-4"
+        )}
       >
         {tokenizedLines.map((line, idx) => {
           const isCurrentActiveLine = idx === tokenizedLines.length - 1;
@@ -139,10 +107,12 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
                   : 'hover:bg-[#141416]/[0.015] border-l-2 border-transparent'
               )}
             >
-              {/* Line Number */}
+              {/* Line Number (Subtly hidden during Chapter 0, fades in for Chapter 1) */}
               <span className={clsx(
-                "w-5 md:w-7 select-none text-right pr-2 md:pr-3.5 text-[10px] md:text-[11px] font-normal tabular-nums flex-shrink-0 transition-colors pt-[1px]",
-                isCurrentActiveLine ? "text-[#c84b31] font-medium" : "text-[#141416]/25"
+                "select-none text-right text-[10px] md:text-[11px] font-normal tabular-nums flex-shrink-0 transition-all duration-700 pt-[1px]",
+                snapshot.chapterIndex === 0
+                  ? "w-0 pr-0 opacity-0 overflow-hidden"
+                  : isCurrentActiveLine ? "w-5 md:w-7 pr-2 md:pr-3.5 text-[#c84b31] font-medium opacity-100" : "w-5 md:w-7 pr-2 md:pr-3.5 text-[#141416]/25 opacity-100"
               )}>
                 {line.lineNumber}
               </span>
