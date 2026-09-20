@@ -59,8 +59,8 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
           {tokenizedLines.map((line, idx) => {
             const isCurrentActiveLine = idx === tokenizedLines.length - 1;
             return (
-              <div key={idx} className="flex items-center">
-                <span className="whitespace-pre">
+              <div key={idx} className="flex items-center w-full min-w-0">
+                <span className="whitespace-pre-wrap break-words [word-break:break-word] min-w-0">
                   {line.tokens.map((token, tIdx) => (
                     <span
                       key={tIdx}
@@ -123,7 +123,7 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
       {/* Code Lines Container */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto overflow-x-auto p-2 md:p-4 custom-scrollbar space-y-[1px]"
+        className="flex-1 overflow-y-auto overflow-x-hidden p-2 md:p-4 custom-scrollbar space-y-[1px]"
       >
         {tokenizedLines.map((line, idx) => {
           const isCurrentActiveLine = idx === tokenizedLines.length - 1;
@@ -133,7 +133,7 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
               key={idx}
               ref={isCurrentActiveLine ? activeLineRef : null}
               className={clsx(
-                'flex items-start rounded-r px-1 transition-all duration-150',
+                'flex items-start rounded-r px-1 transition-all duration-150 w-full min-w-0',
                 isCurrentActiveLine
                   ? 'bg-gradient-to-r from-[#c84b31]/10 via-[#c84b31]/[0.02] to-transparent border-l-2 border-[#c84b31]'
                   : 'hover:bg-[#141416]/[0.015] border-l-2 border-transparent'
@@ -141,14 +141,14 @@ export const CodePanel: React.FC<CodePanelProps> = ({ snapshot, isOpeningMode = 
             >
               {/* Line Number */}
               <span className={clsx(
-                "w-5 md:w-7 select-none text-right pr-2 md:pr-3.5 text-[10px] md:text-[11px] font-normal tabular-nums flex-shrink-0 transition-colors",
+                "w-5 md:w-7 select-none text-right pr-2 md:pr-3.5 text-[10px] md:text-[11px] font-normal tabular-nums flex-shrink-0 transition-colors pt-[1px]",
                 isCurrentActiveLine ? "text-[#c84b31] font-medium" : "text-[#141416]/25"
               )}>
                 {line.lineNumber}
               </span>
 
               {/* Code Tokens */}
-              <span className="flex-1 whitespace-pre font-normal text-[#141416]">
+              <span className="flex-1 min-w-0 whitespace-pre-wrap break-words [word-break:break-word] font-normal text-[#141416]">
                 {line.tokens.map((token, tIdx) => {
                   let tokenClass = 'text-[#141416]';
                   if (token.type === 'tag') tokenClass = 'text-[#141416] font-medium';

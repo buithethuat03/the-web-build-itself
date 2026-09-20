@@ -56,9 +56,16 @@ export const ChapterOverlay: React.FC<ChapterOverlayProps> = ({ snapshot }) => {
       {/* 2. Dramatic Center Cinematic Title Card (Flashes on chapter transition) */}
       {showCenterCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none px-4 transition-opacity duration-700">
-          <div className="relative overflow-hidden bg-[#141416]/92 border border-white/20 text-[#faf9f6] px-6 py-5 md:px-10 md:py-8 rounded-2xl shadow-2xl backdrop-blur-md max-w-lg w-full text-center transform animate-in fade-in zoom-in-95 duration-300">
+          <div
+            style={{
+              backgroundColor: '#141416',
+              color: '#faf9f6',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75)',
+            }}
+            className="relative overflow-hidden bg-[#141416] border border-white/25 text-[#faf9f6] px-6 py-5 md:px-10 md:py-8 rounded-2xl shadow-2xl max-w-lg w-full text-center transform animate-in fade-in zoom-in-95 duration-300"
+          >
             {/* Giant Roman numeral watermark background */}
-            <div className="absolute -right-4 -bottom-6 text-white/[0.04] text-8xl md:text-9xl font-serif font-black select-none pointer-events-none">
+            <div className="absolute -right-4 -bottom-6 text-white/[0.08] text-8xl md:text-9xl font-serif font-black select-none pointer-events-none">
               {snapshot.eraYear}
             </div>
 
@@ -66,17 +73,17 @@ export const ChapterOverlay: React.FC<ChapterOverlayProps> = ({ snapshot }) => {
             <div className="mx-auto w-12 h-1 bg-[#c84b31] rounded-full mb-3 shadow-[0_0_10px_#c84b31]" />
 
             {/* Chapter Number Badge */}
-            <div className="text-[11px] md:text-xs font-mono font-semibold text-[#e05638] tracking-[0.2em] uppercase mb-1">
+            <div className="text-[11px] md:text-xs font-mono font-bold text-[#f97316] tracking-[0.2em] uppercase mb-1">
               ERA {snapshot.eraYear} · CHAPTER {displayedIndex.toString().padStart(2, '0')}
             </div>
 
             {/* Title */}
-            <h2 className="text-xl md:text-2xl font-serif font-normal text-[#faf9f6] tracking-tight mb-2">
+            <h2 className="text-xl md:text-2xl font-serif font-semibold text-white tracking-tight mb-2">
               {displayedTitle}
             </h2>
 
             {/* Quote Theme */}
-            <p className="text-xs md:text-sm font-sans text-white/75 italic leading-relaxed max-w-md mx-auto">
+            <p className="text-xs md:text-sm font-sans text-slate-200 italic leading-relaxed max-w-md mx-auto">
               “{displayedTheme}”
             </p>
           </div>

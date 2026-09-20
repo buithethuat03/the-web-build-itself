@@ -56,10 +56,15 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
   // Base raw styling before CSS arrives + responsive adaptations + 90s retro support
   const basePreCssStyle = `
     <style id="stage-pristine-base">
-      html, body {
+      html {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      body {
         margin: 0;
         padding: 2rem 1.5rem;
-        min-height: 100vh;
+        min-height: 100%;
         box-sizing: border-box;
         font-family: 'Times New Roman', Times, serif;
         background-color: #fcfbf9;
@@ -476,20 +481,77 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
       };
     });
 
-    // 4. Camera Scrolling / Chapter 8 Finale Glide
+    // 4. Smart Auto-scroll & Camera Positioning
     const win = iframe.contentWindow;
     if (win) {
+      // Initialize scroll tracker if not already attached to this iframe window
+      if (!(win as any).__stageScrollTrackerAttached) {
+        (win as any).__stageScrollTrackerAttached = true;
+        (win as any).__userScrolledUp = false;
+        (win as any).__isAutoScrolling = false;
+        (win as any).__lastChapterIndex = chapterIndex;
+
+        const onScroll = () => {
+          if ((win as any).__isAutoScrolling) return;
+
+          const scrollHeight = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+          const scrollTop = win.scrollY || doc.documentElement.scrollTop || (doc.body ? doc.body.scrollTop : 0);
+          const clientHeight = win.innerHeight || doc.documentElement.clientHeight;
+          const distFromBottom = scrollHeight - (scrollTop + clientHeight);
+
+          // If distance from bottom > 65px, the user has scrolled up to inspect earlier content
+          if (distFromBottom > 65) {
+            (win as any).__userScrolledUp = true;
+          } else {
+            // User is at or swiped back down near the bottom
+            (win as any).__userScrolledUp = false;
+          }
+        };
+
+        win.addEventListener('scroll', onScroll, { passive: true });
+        win.addEventListener('wheel', () => { (win as any).__isAutoScrolling = false; }, { passive: true });
+        win.addEventListener('touchstart', () => { (win as any).__isAutoScrolling = false; }, { passive: true });
+      }
+
+      // Reset scroll lock when entering a new chapter or seeking so user follows the new chapter
+      if ((win as any).__lastChapterIndex !== chapterIndex) {
+        (win as any).__lastChapterIndex = chapterIndex;
+        (win as any).__userScrolledUp = false;
+      }
+
       if (chapterIndex === 8 && time >= 290) {
         const glideProgress = Math.min(1, Math.max(0, (time - 290) / 10));
         const maxScroll = Math.max(0, doc.documentElement.scrollHeight - win.innerHeight);
+        (win as any).__isAutoScrolling = true;
         win.scrollTo({ top: glideProgress * maxScroll, behavior: 'auto' });
+        setTimeout(() => { if (win) (win as any).__isAutoScrolling = false; }, 50);
       } else if (camera.focusSelector) {
         try {
           const targetEl = doc.querySelector(camera.focusSelector);
           if (targetEl) {
-            targetEl.scrollIntoView({ behavior: 'auto', block: 'center' });
+            (win as any).__isAutoScrolling = true;
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => { if (win) (win as any).__isAutoScrolling = false; }, 200);
           }
         } catch (e) {}
+      } else {
+        // Smart auto-scroll:
+        // When user scrolls down near bottom (or is at bottom), auto-scroll down to show newly added code/content.
+        // When user has scrolled up to inspect earlier content, DO NOT auto-scroll ("giữ nguyên cho họ đang ngắm").
+        if (!(win as any).__userScrolledUp) {
+          const scrollHeight = Math.max(doc.documentElement.scrollHeight, doc.body ? doc.body.scrollHeight : 0);
+          const clientHeight = win.innerHeight || doc.documentElement.clientHeight;
+          const maxScroll = Math.max(0, scrollHeight - clientHeight);
+          const currentScrollTop = win.scrollY || doc.documentElement.scrollTop || (doc.body ? doc.body.scrollTop : 0);
+
+          if (maxScroll > currentScrollTop + 4) {
+            (win as any).__isAutoScrolling = true;
+            win.scrollTo({ top: maxScroll, behavior: 'smooth' });
+            setTimeout(() => {
+              if (win) (win as any).__isAutoScrolling = false;
+            }, 100);
+          }
+        }
       }
     }
   } catch (err) {

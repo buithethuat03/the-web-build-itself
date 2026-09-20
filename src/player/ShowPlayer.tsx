@@ -204,27 +204,27 @@ export const ShowPlayer: React.FC = () => {
 
       {/* Mobile Top Header Bar (Shown when not in pure blank opening) */}
       {layoutMode !== 'blank' && (
-        <div className="flex md:hidden items-center justify-between px-3 py-1.5 bg-[#faf8f5] border-b border-[#141416]/8 z-30 flex-shrink-0">
+        <div className="flex md:hidden items-center justify-between px-3 py-1.5 bg-[#141416] text-[#faf9f6] border-b border-white/10 z-30 flex-shrink-0 shadow-md">
           {/* Chapter indicator */}
-          <div className="flex items-center space-x-1 min-w-0 pr-1">
-            <span className="text-[10px] font-mono font-semibold tracking-wider text-[#c84b31] uppercase whitespace-nowrap">
-              Ch. {snapshot.chapterIndex.toString().padStart(2, '0')}
+          <div className="flex items-center space-x-1.5 min-w-0 pr-1">
+            <span className="text-[10px] font-mono font-semibold tracking-wider text-[#f97316] uppercase whitespace-nowrap">
+              {snapshot.eraYear} · Ch. {snapshot.chapterIndex.toString().padStart(2, '0')}
             </span>
-            <span className="text-[#141416]/30 text-xs">·</span>
-            <span className="text-xs font-serif font-medium text-[#141416] truncate max-w-[90px]">
+            <span className="text-white/30 text-xs">·</span>
+            <span className="text-xs font-serif font-medium text-white truncate max-w-[95px]">
               {snapshot.chapterTitle}
             </span>
           </div>
 
           {/* View Switcher (Segmented buttons with >= 36px touch target) */}
           {layoutMode !== 'full-stage' && (
-            <div className="flex items-center bg-[#141416]/[0.06] p-0.5 rounded text-[11px] font-mono">
+            <div className="flex items-center bg-white/10 p-0.5 rounded text-[11px] font-mono">
               <button
                 type="button"
                 onClick={() => setMobileView('split')}
                 className={clsx(
                   'min-h-[32px] px-2.5 rounded transition-colors touch-manipulation',
-                  mobileView === 'split' ? 'bg-white font-medium shadow-xs text-[#141416]' : 'text-[#141416]/60'
+                  mobileView === 'split' ? 'bg-[#c84b31] font-medium shadow-xs text-white' : 'text-white/70'
                 )}
               >
                 Split
@@ -234,7 +234,7 @@ export const ShowPlayer: React.FC = () => {
                 onClick={() => setMobileView('code')}
                 className={clsx(
                   'min-h-[32px] px-2.5 rounded transition-colors touch-manipulation',
-                  mobileView === 'code' ? 'bg-white font-medium shadow-xs text-[#141416]' : 'text-[#141416]/60'
+                  mobileView === 'code' ? 'bg-[#c84b31] font-medium shadow-xs text-white' : 'text-white/70'
                 )}
               >
                 Code
@@ -244,7 +244,7 @@ export const ShowPlayer: React.FC = () => {
                 onClick={() => setMobileView('stage')}
                 className={clsx(
                   'min-h-[32px] px-2.5 rounded transition-colors touch-manipulation',
-                  mobileView === 'stage' ? 'bg-white font-medium shadow-xs text-[#141416]' : 'text-[#141416]/60'
+                  mobileView === 'stage' ? 'bg-[#c84b31] font-medium shadow-xs text-white' : 'text-white/70'
                 )}
               >
                 Stage
@@ -259,8 +259,8 @@ export const ShowPlayer: React.FC = () => {
             className={clsx(
               'min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-[11px] font-sans border transition-all touch-manipulation flex-shrink-0',
               audioStatus.isReady
-                ? 'bg-[#c84b31]/10 text-[#c84b31] border-[#c84b31]/25 font-medium'
-                : 'bg-white text-[#c84b31] border-[#c84b31]/40 shadow-sm animate-pulse'
+                ? 'bg-[#c84b31]/20 text-[#f97316] border-[#c84b31]/40 font-medium'
+                : 'bg-white text-[#c84b31] border-white/30 shadow-sm animate-pulse'
             )}
             title="Toggle audio (M)"
           >
