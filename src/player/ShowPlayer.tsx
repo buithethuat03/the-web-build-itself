@@ -48,6 +48,7 @@ export const ShowPlayer: React.FC = () => {
     setIsPortfolioMode(true);
     timelineEngine.seek(TOTAL_DURATION);
     timelineEngine.pause();
+    soundEngine.setStoryPlaying(false, 12);
   };
 
   const handleSelectStory = async () => {

@@ -35,9 +35,10 @@ export class TimelineEngine {
       this.lastChapterIndex = snapshot.chapterIndex;
       soundEngine.setChapter(snapshot.chapterIndex);
     }
+    soundEngine.setStoryPlaying(this.isPlaying && snapshot.chapterIndex < 12, snapshot.chapterIndex);
 
     // Play tactile mechanical key clicks if actively typing
-    if (this.isPlaying && snapshot.isTyping) {
+    if (this.isPlaying && snapshot.isTyping && snapshot.chapterIndex < 12) {
       const now = performance.now();
       // At higher speeds, throttle key clicks smoothly to sound like a skilled typist
       const typingInterval = Math.max(65, 110 / Math.min(this.playbackSpeed, 2.5));
@@ -77,6 +78,8 @@ export class TimelineEngine {
     this.isPlaying = true;
     this.lastRafTimestamp = null;
     soundEngine.init();
+    const snapshot = this.getSnapshot();
+    soundEngine.setStoryPlaying(snapshot.chapterIndex < 12, snapshot.chapterIndex);
     this.startLoop();
     this.notify();
   }
@@ -88,6 +91,7 @@ export class TimelineEngine {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }
+    soundEngine.setStoryPlaying(false);
     this.notify();
   }
 
@@ -98,6 +102,8 @@ export class TimelineEngine {
 
   public seek(time: number) {
     this.currentTime = Math.max(0, Math.min(time, checkpointEngine.totalDuration));
+    const snapshot = this.getSnapshot();
+    soundEngine.setStoryPlaying(this.isPlaying && snapshot.chapterIndex < 12, snapshot.chapterIndex);
     this.notify();
   }
 
@@ -152,6 +158,7 @@ export class TimelineEngine {
         if (this.currentTime >= checkpointEngine.totalDuration) {
           this.currentTime = checkpointEngine.totalDuration;
           this.isPlaying = false;
+          soundEngine.setStoryPlaying(false, 12);
           this.notify();
           return;
         }

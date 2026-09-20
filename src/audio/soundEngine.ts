@@ -64,6 +64,7 @@ class SoundEngine {
   private activeVoices: { osc: OscillatorNode; gain: GainNode }[] = [];
   private arpTimer: NodeJS.Timeout | null = null;
   private currentChapter: number = 0;
+  private isStoryPlaying: boolean = false;
   private chordIndex: number = 0;
   private musicInterval: NodeJS.Timeout | null = null;
 
@@ -110,6 +111,38 @@ class SoundEngine {
     };
   }
 
+  public setStoryPlaying(playing: boolean, chapterIndex?: number) {
+    this.isStoryPlaying = playing;
+    if (chapterIndex !== undefined) {
+      this.currentChapter = chapterIndex;
+    }
+    this.updateMusicGain();
+  }
+
+  private updateMusicGain() {
+    if (!this.ctx || !this.musicMasterGain) return;
+    const t = this.ctx.currentTime;
+    this.musicMasterGain.gain.cancelScheduledValues(t);
+
+    // Music ONLY plays when watching the story and before reaching the finished portfolio (Chapter 12)
+    const shouldPlayMusic = !this.isMuted && this.isStoryPlaying && this.currentChapter < 12;
+
+    if (shouldPlayMusic) {
+      this.musicMasterGain.gain.setValueAtTime(this.musicMasterGain.gain.value, t);
+      this.musicMasterGain.gain.linearRampToValueAtTime(0.28, t + 0.4);
+    } else {
+      this.musicMasterGain.gain.setValueAtTime(this.musicMasterGain.gain.value, t);
+      this.musicMasterGain.gain.linearRampToValueAtTime(0.0001, t + 0.3);
+      this.activeVoices.forEach((voice) => {
+        try {
+          voice.gain.gain.cancelScheduledValues(t);
+          voice.gain.gain.setValueAtTime(voice.gain.gain.value, t);
+          voice.gain.gain.linearRampToValueAtTime(0.0001, t + 0.3);
+        } catch (e) {}
+      });
+    }
+  }
+
   public init() {
     if (this.isInitialized && this.ctx) {
       if (this.ctx.state === 'suspended') {
@@ -128,11 +161,7 @@ class SoundEngine {
 
         this.ctx.onstatechange = () => {
           this.notifyStatus();
-          if (this.ctx?.state === 'running' && !this.isMuted && this.musicMasterGain) {
-            const t = this.ctx.currentTime;
-            this.musicMasterGain.gain.cancelScheduledValues(t);
-            this.musicMasterGain.gain.setValueAtTime(0.28, t);
-          }
+          this.updateMusicGain();
         };
 
         if (this.ctx.state === 'suspended') {
@@ -152,11 +181,7 @@ class SoundEngine {
         await this.ctx.resume();
       } catch (e) {}
     }
-    if (this.musicMasterGain && this.ctx && this.ctx.state === 'running' && !this.isMuted) {
-      const t = this.ctx.currentTime;
-      this.musicMasterGain.gain.cancelScheduledValues(t);
-      this.musicMasterGain.gain.setValueAtTime(0.28, t);
-    }
+    this.updateMusicGain();
     this.notifyStatus();
     return !!this.ctx && this.ctx.state === 'running';
   }
@@ -218,11 +243,7 @@ class SoundEngine {
       this.ctx.resume().catch(() => {});
     }
     this.isMuted = !this.isMuted;
-    if (this.musicMasterGain && this.ctx) {
-      const t = this.ctx.currentTime;
-      this.musicMasterGain.gain.cancelScheduledValues(t);
-      this.musicMasterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.28, t);
-    }
+    this.updateMusicGain();
     this.notifyStatus();
     return this.isMuted;
   }
@@ -235,11 +256,7 @@ class SoundEngine {
         this.ctx.resume().catch(() => {});
       }
     }
-    if (this.musicMasterGain && this.ctx) {
-      const t = this.ctx.currentTime;
-      this.musicMasterGain.gain.cancelScheduledValues(t);
-      this.musicMasterGain.gain.setValueAtTime(muted ? 0 : 0.28, t);
-    }
+    this.updateMusicGain();
     this.notifyStatus();
   }
 
@@ -251,7 +268,8 @@ class SoundEngine {
   // 1. REAL MECHANICAL KEYBOARD PLAYBACK (Authentic Studio Samples)
   // =========================================================================
   public playKeyClick(isSpecialKey: boolean = false, isEnter: boolean = false) {
-    if (this.isMuted || !this.ctx || this.ctx.state === 'suspended') return;
+    // Keyboard sounds only play when actively watching story and before portfolio is finished
+    if (this.isMuted || !this.isStoryPlaying || this.currentChapter >= 12 || !this.ctx || this.ctx.state === 'suspended') return;
 
     // A. Use Real Recorded Samples if Loaded
     if (this.isSamplesLoaded && this.realKeyBuffers.length > 0) {
@@ -291,7 +309,7 @@ class SoundEngine {
   }
 
   private playProceduralKeyClick(isSpecialKey: boolean = false) {
-    if (this.isMuted || !this.ctx) return;
+    if (this.isMuted || !this.isStoryPlaying || this.currentChapter >= 12 || !this.ctx) return;
     try {
       if (this.ctx.state === 'suspended') return;
       const t = this.ctx.currentTime;
@@ -332,7 +350,7 @@ class SoundEngine {
     if (!this.ctx) return;
 
     this.musicMasterGain = this.ctx.createGain();
-    this.musicMasterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.28, this.ctx.currentTime);
+    this.musicMasterGain.gain.setValueAtTime(0, this.ctx.currentTime);
 
     this.padFilter = this.ctx.createBiquadFilter();
     this.padFilter.type = 'lowpass';
@@ -344,13 +362,20 @@ class SoundEngine {
 
     this.startChordProgression();
     this.startSubtleArpeggio();
+    this.updateMusicGain();
   }
 
   public setChapter(chapterIndex: number) {
     if (this.currentChapter === chapterIndex) return;
     this.currentChapter = chapterIndex;
+    if (chapterIndex >= 12) {
+      // Portfolio is finished! Silence music immediately
+      this.updateMusicGain();
+      return;
+    }
     this.transitionToChapterChords(chapterIndex);
     this.playTransitionImpact();
+    this.updateMusicGain();
   }
 
   private startChordProgression() {
@@ -363,7 +388,7 @@ class SoundEngine {
   }
 
   private playCurrentChord() {
-    if (!this.ctx || !this.padFilter) return;
+    if (!this.ctx || !this.padFilter || !this.isStoryPlaying || this.currentChapter >= 12 || this.isMuted) return;
     const t = this.ctx.currentTime;
     const chords = CHORD_PROGRESSIONS[this.currentChapter] || CHORD_PROGRESSIONS[0];
     const notes = chords[this.chordIndex % chords.length];
@@ -410,7 +435,7 @@ class SoundEngine {
     if (this.arpTimer) clearInterval(this.arpTimer);
     let step = 0;
     this.arpTimer = setInterval(() => {
-      if (this.isMuted || !this.ctx || this.ctx.state === 'suspended') return;
+      if (this.isMuted || !this.ctx || this.ctx.state === 'suspended' || !this.isStoryPlaying || this.currentChapter >= 12) return;
       if (this.currentChapter < 3) return;
 
       const chords = CHORD_PROGRESSIONS[this.currentChapter] || CHORD_PROGRESSIONS[0];
