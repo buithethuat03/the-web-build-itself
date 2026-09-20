@@ -7,7 +7,7 @@ import { Timeline } from './Timeline';
 import { TransportControls } from './TransportControls';
 import { ChapterOverlay } from './ChapterOverlay';
 import { WelcomeModal } from './WelcomeModal';
-import { Volume2, VolumeX, Sparkles, FileText } from 'lucide-react';
+import { Volume2, Sparkles, FileText } from 'lucide-react';
 import clsx from 'clsx';
 import { TOTAL_DURATION } from '../engine/script';
 import { soundEngine, AudioStatus } from '../audio/soundEngine';
@@ -435,38 +435,6 @@ export const ShowPlayer: React.FC = () => {
             </div>
           )}
 
-          {/* Mobile Mute Button */}
-          <button
-            type="button"
-            onClick={handleToggleMute}
-            className={clsx(
-              'min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-[11px] font-sans border transition-all touch-manipulation flex-shrink-0',
-              audioStatus.isReady
-                ? 'bg-[#c84b31]/20 text-[#f97316] border-[#c84b31]/40 font-medium'
-                : 'bg-white text-[#c84b31] border-white/30 shadow-sm animate-pulse'
-            )}
-            title="Toggle audio (M)"
-          >
-            {audioStatus.isReady ? <Volume2 size={15} /> : <VolumeX size={15} />}
-          </button>
-        </div>
-      )}
-
-      {/* Mobile Pure Opening Sound Pill (Visible only in Chapter 0 on mobile) */}
-      {layoutMode === 'blank' && (
-        <div className="flex md:hidden absolute top-3.5 right-4 z-40">
-          <button
-            type="button"
-            onClick={handleToggleMute}
-            className={clsx(
-              'min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-[11px] font-sans border transition-all touch-manipulation',
-              audioStatus.isReady
-                ? 'bg-[#c84b31]/10 text-[#c84b31] border-[#c84b31]/25'
-                : 'bg-white text-[#c84b31] border-[#c84b31]/40 shadow-sm animate-pulse'
-            )}
-          >
-            {audioStatus.isReady ? <Volume2 size={15} /> : <VolumeX size={15} />}
-          </button>
         </div>
       )}
 
