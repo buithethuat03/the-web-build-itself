@@ -1,4 +1,4 @@
-# Thuật Bùi — Interactive Portfolio & CV
+# The Web Builds Itself
 
 An interactive, cinematic portfolio that constructs itself in real time with synchronized typing and mechanical audio.
 
