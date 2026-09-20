@@ -73,14 +73,16 @@ export class CheckpointEngine {
           layoutMode = cue.mode;
           break;
 
-        case 'camera':
+        case 'camera': {
+          const isCueActive = !isCueFinished;
           camera = {
             zoom: cue.zoom ?? camera.zoom,
             panX: cue.panX ?? camera.panX,
             panY: cue.panY ?? camera.panY,
-            focusSelector: cue.focusSelector ?? null
+            focusSelector: (isCueActive && cue.focusSelector) ? cue.focusSelector : null
           };
           break;
+        }
 
         case 'type': {
           activeBuffer = cue.buffer;

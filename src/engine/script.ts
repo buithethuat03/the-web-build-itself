@@ -59,7 +59,7 @@ export const RAW_CUES: Cue[] = [
   { id: 'c2-t1', start: 102.0, duration: 8.0, type: 'type', buffer: 'html', code: `  <nav class="main-nav">\n    <a href="#story">Story</a>\n    <a href="#principles">Principles</a>\n` },
   { id: 'c2-t2', start: 111.0, duration: 8.0, type: 'type', buffer: 'html', code: `    <a href="#timeline">Timeline</a>\n    <a href="#join">Join</a>\n  </nav>\n` },
   { id: 'c2-t3', start: 120.0, duration: 3.5, type: 'type', buffer: 'html', code: `  <hr class="divider">\n` },
-  { id: 'c2-cam-nav', start: 124.0, duration: 2.0, type: 'camera', focusSelector: '.main-nav' },
+  { id: 'c2-pause-nav', start: 124.0, duration: 2.0, type: 'pause' },
   { id: 'c2-pause', start: 126.5, duration: 23.5, type: 'pause' },
 
   // ==========================================
