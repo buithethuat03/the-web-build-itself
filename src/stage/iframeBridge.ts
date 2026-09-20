@@ -106,19 +106,83 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
         background: #f4f1ea;
       }
 
-      /* Default Native Dialog Styling */
+      /* Default Modern Dialog & Accordion Styling */
       dialog {
-        border: 1px solid rgba(20, 20, 22, 0.2);
-        border-radius: 12px;
+        border: 1px solid rgba(20, 20, 22, 0.12);
+        border-radius: 18px;
         padding: 2rem;
-        max-width: 480px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        max-width: 520px;
+        width: 92vw;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25);
         background: #ffffff;
         color: #141416;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
       }
       dialog::backdrop {
-        background: rgba(20, 20, 22, 0.4);
-        backdrop-filter: blur(4px);
+        background: rgba(20, 20, 22, 0.55);
+        backdrop-filter: blur(8px);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+      }
+      .modal-close-icon {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        color: #57606a;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+      }
+      .modal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.75rem;
+        margin: 1.2rem 0;
+      }
+      .modal-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: #faf9f6;
+        border: 1px solid rgba(20, 20, 22, 0.08);
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        text-decoration: none;
+        color: inherit;
+      }
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 1.2rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(20, 20, 22, 0.08);
+      }
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid rgba(20, 20, 22, 0.15);
+        color: #57606a;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: #c84b31;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.4rem;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
       }
 
       /* Responsive Adaptations for Mobile Screens */
@@ -129,6 +193,9 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
         h1 {
           font-size: 2rem !important;
           line-height: 1.2 !important;
+        }
+        .modal-grid {
+          grid-template-columns: 1fr !important;
         }
       }
     </style>
@@ -148,9 +215,10 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
         const state = ${JSON.stringify(interactiveState)};
         
         // Native Dialog Interactivity
-        const dialog = document.getElementById('manifest-dialog');
-        const openBtn = document.getElementById('btn-open-manifest');
-        const closeBtn = document.getElementById('btn-close-manifest');
+        const dialog = document.getElementById('contact-dialog') || document.getElementById('manifest-dialog');
+        const openBtn = document.getElementById('btn-open-contact') || document.getElementById('btn-open-manifest');
+        const closeBtn = document.getElementById('btn-close-contact') || document.getElementById('btn-close-manifest');
+        const closeIcon = document.getElementById('btn-close-icon');
 
         if (dialog) {
           if (state.dialogOpen && !dialog.open) {
@@ -167,6 +235,11 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
         }
         if (closeBtn && dialog) {
           closeBtn.onclick = function() {
+            try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
+          };
+        }
+        if (closeIcon && dialog) {
+          closeIcon.onclick = function() {
             try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
           };
         }
@@ -271,6 +344,7 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
 
     const openBtn = doc.getElementById('btn-open-contact') || doc.getElementById('btn-open-manifest');
     const closeBtn = doc.getElementById('btn-close-contact') || doc.getElementById('btn-close-manifest');
+    const closeIcon = doc.getElementById('btn-close-icon');
     if (openBtn && dialog) {
       openBtn.onclick = () => {
         try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
@@ -278,6 +352,11 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
     }
     if (closeBtn && dialog) {
       closeBtn.onclick = () => {
+        try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
+      };
+    }
+    if (closeIcon && dialog) {
+      closeIcon.onclick = () => {
         try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
       };
     }
