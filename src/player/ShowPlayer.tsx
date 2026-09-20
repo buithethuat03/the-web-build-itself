@@ -334,38 +334,6 @@ export const ShowPlayer: React.FC = () => {
       {/* Chapter Title Badge Overlay (Centered cinematic pill on desktop) */}
       <ChapterOverlay snapshot={snapshot} />
 
-      {/* Desktop Sound Pill (Top-Right) */}
-      <div className="hidden md:flex absolute top-3.5 right-4 z-40 items-center space-x-2">
-        <button
-          type="button"
-          onClick={handleToggleMute}
-          className={clsx(
-            'flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-[11px] font-sans border transition-all duration-200 touch-manipulation shadow-xs backdrop-blur-sm',
-            audioStatus.isReady
-              ? 'bg-[#c84b31]/10 text-[#c84b31] border-[#c84b31]/30 font-medium'
-              : 'bg-white text-[#c84b31] border-[#c84b31]/50 hover:bg-[#c84b31]/10 font-semibold shadow-md animate-pulse ring-2 ring-[#c84b31]/20'
-          )}
-          title={audioStatus.isReady ? 'Tắt âm thanh (M)' : 'Bật nhạc nền không lời & tiếng gõ phím cơ (M)'}
-        >
-          {audioStatus.isReady ? (
-            <>
-              <Volume2 size={13} />
-              <span className="flex items-end space-x-[1.5px] h-3 pr-0.5">
-                <span className="w-[1.5px] h-2.5 bg-[#c84b31] animate-pulse" />
-                <span className="w-[1.5px] h-3.5 bg-[#c84b31] animate-pulse delay-75" />
-                <span className="w-[1.5px] h-1.5 bg-[#c84b31] animate-pulse delay-150" />
-              </span>
-              <span>Nhạc nền & Phím cơ</span>
-            </>
-          ) : (
-            <>
-              <VolumeX size={13} className="text-[#c84b31]" />
-              <span>Bật âm thanh (Phím & Nhạc)</span>
-            </>
-          )}
-        </button>
-      </div>
-
       {/* Mobile Top Header Bar (Shown when not in pure blank opening) */}
       {layoutMode !== 'blank' && (
         <div className="flex md:hidden items-center justify-between px-3 py-1.5 bg-[#141416] text-[#faf9f6] border-b border-white/10 z-30 flex-shrink-0 shadow-md">
@@ -460,7 +428,7 @@ export const ShowPlayer: React.FC = () => {
             className="flex items-center space-x-2 text-xs font-sans bg-[#141416]/92 hover:bg-[#141416] text-[#faf9f6] px-4 py-2 rounded-full shadow-2xl border border-white/20 transition-all backdrop-blur-md animate-bounce"
           >
             <Volume2 size={14} className="text-[#e05638]" />
-            <span>Chạm bất kỳ đâu để bật âm thanh (Nhạc & Phím cơ)</span>
+            <span>Tap anywhere to enable audio (Music & Typing)</span>
           </button>
         </div>
       )}

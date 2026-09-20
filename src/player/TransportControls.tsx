@@ -144,7 +144,7 @@ export const TransportControls: React.FC<TransportControlsProps> = ({
           className={`${controlBtnClass} ${
             !isMuted ? 'text-[#c84b31] bg-[#c84b31]/10 border border-[#c84b31]/20' : ''
           }`}
-          title={isMuted ? 'Bật nhạc nền & tiếng gõ phím cơ (M)' : 'Tắt âm thanh (M)'}
+          title={isMuted ? 'Unmute Audio (M)' : 'Mute Audio (M)'}
           aria-label={isMuted ? 'Unmute' : 'Mute'}
         >
           {isMuted ? <VolumeX size={15} /> : (

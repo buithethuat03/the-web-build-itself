@@ -61,6 +61,7 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
+        scroll-padding-top: 4.5rem;
         touch-action: pan-y;
       }
       body {
@@ -78,6 +79,23 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
       }
       *, *:before, *:after {
         box-sizing: inherit;
+      }
+
+      /* Anchor scroll target margins */
+      header, section, .project-card, .edu-card, .exp-item, .contact-banner {
+        scroll-margin-top: 4.5rem;
+      }
+
+      /* Responsive SVG and Table */
+      svg {
+        max-width: 100%;
+        height: auto;
+      }
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 1.5rem 0;
       }
       
       /* Classic Unstyled Hyperlink styles */
@@ -243,6 +261,28 @@ export function buildStageDocument(snapshot: ShowSnapshot): string {
             try { dialog.close(); } catch (e) { dialog.removeAttribute('open'); }
           };
         }
+
+        // Intercept hash navigation to prevent iframe srcdoc reload/navigation
+        document.addEventListener('click', function(e) {
+          const link = e.target && e.target.closest('a[href^="#"]');
+          if (link) {
+            e.preventDefault();
+            e.stopPropagation();
+            const hash = link.getAttribute('href');
+            if (!hash || hash === '#') return;
+            const targetId = hash.slice(1);
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              if (window.__stageScrollTrackerAttached) {
+                window.__userScrolledUp = true;
+                window.__lastUserInteraction = Date.now();
+                window.__isUserInteracting = true;
+                setTimeout(function() { window.__isUserInteracting = false; }, 800);
+              }
+            }
+          }
+        }, true);
 
         // Chapter 12 Finale Majestic Vertical Glide
         const chIdx = ${snapshot.chapterIndex};
@@ -413,12 +453,33 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
           }
         }, { passive: true });
 
+        // Intercept in-page hash links to prevent iframe navigation & reload
+        doc.addEventListener('click', (e: MouseEvent) => {
+          const target = e.target as HTMLElement | null;
+          const link = target ? (target.closest('a[href^="#"]') as HTMLAnchorElement | null) : null;
+          if (link) {
+            e.preventDefault();
+            e.stopPropagation();
+            const hash = link.getAttribute('href');
+            if (!hash || hash === '#') return;
+            const targetId = hash.slice(1);
+            const targetEl = doc.getElementById(targetId);
+            if (targetEl) {
+              markUserInteraction();
+              (win as any).__userScrolledUp = true;
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              setTimeout(() => { if (win) (win as any).__isUserInteracting = false; }, 800);
+            }
+          }
+        }, true);
+
         // Desktop mouse drag-to-scroll (pan)
         let isMouseDown = false;
         let startY = 0;
         let startScrollTop = 0;
 
         doc.addEventListener('mousedown', (e: MouseEvent) => {
+          markUserInteraction();
           const target = e.target as HTMLElement | null;
           // Don't drag if clicking interactive controls (buttons, inputs, links, details)
           if (target && target.closest('button, input, textarea, select, a, summary, dialog')) {
@@ -427,7 +488,6 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
           isMouseDown = true;
           startY = e.clientY;
           startScrollTop = win.scrollY || doc.documentElement.scrollTop || 0;
-          markUserInteraction();
         }, { passive: true });
 
         doc.addEventListener('mousemove', (e: MouseEvent) => {
