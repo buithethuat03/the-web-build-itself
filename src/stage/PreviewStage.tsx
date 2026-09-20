@@ -57,7 +57,7 @@ export const PreviewStage: React.FC<PreviewStageProps> = ({ snapshot }) => {
           <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#c84b31] to-transparent shadow-[0_0_18px_#c84b31] animate-scanline" />
           <div className="absolute bottom-4 right-4 bg-[#c84b31]/95 text-white font-mono text-[9.5px] tracking-widest uppercase px-3 py-1 rounded-full shadow-lg backdrop-blur-xs flex items-center space-x-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-            <span>CSS Transformation · Structure Liberated</span>
+            <span>CSS Masterpiece · Portfolio Transformed</span>
           </div>
         </div>
       )}
@@ -66,9 +66,9 @@ export const PreviewStage: React.FC<PreviewStageProps> = ({ snapshot }) => {
       {snapshot.chapterIndex === 12 && (
         <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 pointer-events-none z-30 max-w-[94vw] bg-[#141416]/95 border border-white/20 text-[#faf9f6] px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-2xl backdrop-blur-md flex items-center space-x-2 animate-reveal">
           <span className="w-2 h-2 rounded-full bg-[#c84b31] animate-pulse flex-shrink-0" />
-          <span className="text-[11px] sm:text-xs font-serif italic text-white/95 whitespace-nowrap">1991: Hello World → 2026: The Web Builds Itself</span>
+          <span className="text-[11px] sm:text-xs font-serif italic text-white/95 whitespace-nowrap">Bui The Thuat · Backend &amp; DevOps Engineer</span>
           <span className="text-white/30 text-xs">·</span>
-          <span className="text-[9.5px] sm:text-[10px] font-mono text-white/70 whitespace-nowrap">View Source</span>
+          <span className="text-[9.5px] sm:text-[10px] font-mono text-white/70 whitespace-nowrap">UET-VNU (GPA 3.72/4.0)</span>
         </div>
       )}
 

@@ -260,7 +260,7 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
     }
 
     // 3. Sync Interactive Dialog State
-    const dialog = doc.getElementById('manifest-dialog') as HTMLDialogElement | null;
+    const dialog = (doc.getElementById('contact-dialog') || doc.getElementById('manifest-dialog')) as HTMLDialogElement | null;
     if (dialog) {
       if (interactiveState.dialogOpen && !dialog.open) {
         try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
@@ -269,8 +269,8 @@ export function updateStageDocumentDirectly(iframe: HTMLIFrameElement, snapshot:
       }
     }
 
-    const openBtn = doc.getElementById('btn-open-manifest');
-    const closeBtn = doc.getElementById('btn-close-manifest');
+    const openBtn = doc.getElementById('btn-open-contact') || doc.getElementById('btn-open-manifest');
+    const closeBtn = doc.getElementById('btn-close-contact') || doc.getElementById('btn-close-manifest');
     if (openBtn && dialog) {
       openBtn.onclick = () => {
         try { dialog.showModal(); } catch (e) { dialog.setAttribute('open', ''); }
