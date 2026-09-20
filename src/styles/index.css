@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    
+    --bg-paper: #faf9f6;
+    --bg-paper-pure: #ffffff;
+    --text-primary: #141416;
+    --text-secondary: #606064;
+    --text-muted: #93939a;
+    --border-hairline: rgba(20, 20, 22, 0.09);
+    --border-strong: rgba(20, 20, 22, 0.18);
+    
+    --accent-terra: #c84b31;
+    --accent-slate: #2a2d34;
+    --code-tag: #1f2328;
+    --code-attr: #6e7781;
+    --code-val: #0550ae;
+    --code-comment: #8c959f;
+    --code-punct: #57606a;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-paper);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.font-editorial {
+  font-family: var(--font-serif);
+}
+
+.font-code {
+  font-family: var(--font-mono);
+}
+
+/* Custom minimal scrollbar for code editor */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(20, 20, 22, 0.15);
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 20, 22, 0.3);
+}
+
+/* Caret blinking keyframe */
+@keyframes caret-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-caret {
+  animation: caret-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Subtle line sweep */
+@keyframes line-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: line-reveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Reality-shift scanline sweep */
+@keyframes scanline-sweep {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.animate-scanline {
+  animation: scanline-sweep 3.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
